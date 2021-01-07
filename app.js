@@ -32,7 +32,7 @@ var corsOptions = {
 }
 
 /*Anslut till mongoDB med mongoose */
-const url = 'mongodb+srv://miun-user:Soulfood71@cluster0.ybcm5.mongodb.net/DT162G?retryWrites=true&w=majority'
+let url = 'mongodb+srv://miun-user:Soulfood71@cluster0.ybcm5.mongodb.net/DT162G?retryWrites=true&w=majority'
 const connectionParams={
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -45,7 +45,8 @@ let connection
 if (devMode){
     server = '127.0.0.1:27017'
     database = 'DT162G'
-    connection = mongoose.createConnection(`mongodb://${server}/${database}`)
+    url = `mongodb://${server}/${database}`
+    connection = mongoose.createConnection(url,connectionParams)
 } else {
     connection = mongoose.createConnection(url,connectionParams)
 }
@@ -82,7 +83,7 @@ function getCurrentDate() {
 
 /*Login*/
 app.post("/user/login", (req, res) => {
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
         .then(() => {
 
             connection.db.collection("users").find({ user_name: req.body.cred.userName }).toArray((err, data) => {
@@ -120,7 +121,7 @@ app.post("/user/login", (req, res) => {
 app.put("/user/update/:userId", (req, res) => {
     const userId = parseInt(req.params.userId);
     /* Connect to mongodb */
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
         /* find user by username in mongo given in variable req */
         .then(() => {
             mongoose.connection.db.collection("sessions").find({}).toArray((err, data) => {
@@ -156,7 +157,7 @@ app.post("/user/logout/:userId", (req, res) => {
                 console.log("Logout failed")
                 return res.status(401).send(JSON.stringify({ "message": "Inloggning misslyckades" }))
             } else {
-                mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+                mongoose.connect(url,connectionParams)
 
                     .then(() => {
                         mongoose.connection.db.collection("sessions").find({}).toArray((err, data) => {
@@ -187,7 +188,7 @@ app.post("/user/logout/:userId", (req, res) => {
 })
 /*Skapar användare*/
 app.post("/user/create", (req, res) => {
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
 
         .then(() => {
             mongoose.connection.db.collection("users").find({ user_name: req.body.userName }).toArray((err, data) => {
@@ -233,7 +234,7 @@ app.post("/user/create", (req, res) => {
 /*Hämtar användare*/
 app.get("/user/get", (req, res) => {
     /*Connect to mongoDB*/
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
 
         .then(() => {
             mongoose.connection.db.collection("users").find().toArray((err, data) => {
@@ -250,7 +251,7 @@ app.get("/user/get", (req, res) => {
 /*Hämtar användar id*/
 app.get("/user/get/:userId", (req, res) => {
     var userId = parseInt(req.params.userId);
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
         .then(() => {
             mongoose.connection.db.collection("users").find({ userId: userId }).toArray((err, data) => {
                 mongoose.connection.close()
@@ -266,7 +267,7 @@ app.get("/user/get/:userId", (req, res) => {
 /*Läger till bloggpost*/
 app.post("/blogg/posts/add/:userId", (req, res) => {
     var userId = parseInt(req.params.userId);
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
         .then(() => {
             mongoose.connection.db.collection("sessions").find({}).toArray((err, data) => {
                 data.forEach(e => {
@@ -314,7 +315,7 @@ app.post("/blogg/posts/add/:userId", (req, res) => {
 app.delete("/blogg/posts/delete/:id/:userId", (req, res) => {
     var deleteId = parseInt(req.params.id)
     var userId = parseInt(req.params.userId)
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
 
         .then(() => {
             mongoose.connection.db.collection("sessions").find({}).toArray((err, data) => {
@@ -343,7 +344,7 @@ app.delete("/blogg/posts/delete/:id/:userId", (req, res) => {
 //hämtar alla blogginlägg 
 app.get("/blogg/posts/get", (req, res) => {
     /*Connect to mongoDB*/
-    mongoose.connect(devMode ? `mongodb://${server}/${database}` : (url,connectionParams)  )
+    mongoose.connect(url,connectionParams)
 
         .then(() => {
             mongoose.connection.db.collection("posts").find().toArray((err, data) => {
