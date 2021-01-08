@@ -12,7 +12,7 @@ var mongoose = require('mongoose')
 var app = express()
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'localhost:3000')
+    res.header('Access-Control-Allow-Origin', 'https://willbur.nu')
     res.header('Access-Control-Allow-Credentials', true)
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     res.append('Access-Control-Allow-Headers', 'Content-Type')
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 var corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'https://willbur.nu',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
