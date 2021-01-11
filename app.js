@@ -12,7 +12,8 @@ var mongoose = require('mongoose')
 var app = express()
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Origin', ['https://www.willbur.nu', "http://willbur.nu", "https://willbur.nu"]);
+    res.header('Access-Control-Allow-Origin', ['https://www.willbur.nu', "http://willbur.nu", "https://willbur.nu"])
     res.header('Access-Control-Allow-Credentials', true)
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     res.append('Access-Control-Allow-Headers', 'Content-Type')
@@ -27,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 var corsOptions = {
-    origin: '*',
+    origin: ['https://www.willbur.nu', "http://willbur.nu", "https://willbur.nu"],
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
@@ -128,7 +129,7 @@ app.put("/user/update/:userId", (req, res) => {
                 data.forEach(e => {
                     const cookie = JSON.parse(e.session)
                     if (cookie._userId !== userId) {
-                        return res.status(401).send(JSON.stringify({ "message": "Ej behörig" }))
+                        
                     } else {
                         mongoose.connection.db.collection("users").updateOne({ userId:userId}, [{$set:{ email: req.body.email }}], (err, result) => {
                             mongoose.connection.close()
@@ -273,7 +274,7 @@ app.post("/blogg/posts/add/:userId", (req, res) => {
                 data.forEach(e => {
                     const cookie = JSON.parse(e.session)
                     if (cookie._userId !== userId) {
-                        return res.status(401).send(JSON.stringify({ "message": "Ej behörig" }))
+                        
                     } else {
                         mongoose.connection.db.collection("users").find({ userId: userId }).toArray((err, data) => {
                             const userName = data[0].user_name;
@@ -322,7 +323,7 @@ app.delete("/blogg/posts/delete/:id/:userId", (req, res) => {
                 data.forEach(e => {
                     const cookie = JSON.parse(e.session)
                     if (cookie._userId !== userId) {
-                        return res.status(401).send(JSON.stringify({ "message": "Ej behörig" }))
+                       
                     } else {
                         mongoose.connection.db.collection("posts").deleteMany({ postId: deleteId }, (err, _) => {
                             if (err) {
